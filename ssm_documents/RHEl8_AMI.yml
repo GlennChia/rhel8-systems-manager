@@ -1,0 +1,62 @@
+description: |-
+  SSM document that installs the SSM agent and cfn-signal to RHEL8
+
+  ---
+  # RHEL8 SSM Document
+  RHEL8 doesn't come with an SSM agent installed or cfn-signal command. This SSM document will perform the relevant installations.
+  ## SSM agent
+  SSM agent only comes out of the box for certain instances like Amazon Linux 2 and Ubuntu 16.04. The list can be found at the AWS [ssm agent guide](https://docs.aws.amazon.com/systems-manager/latest/userguide/ssm-agent.html)
+
+  To install the agent for RHEL8, follow the instructions at [Manually install SSM Agent on Red Hat Enterprise Linux instances](https://docs.aws.amazon.com/systems-manager/latest/userguide/agent-install-rhel.html)
+  ## cfn-signal
+  The `cfn-signal` command is very important for a rolling update in an auto scaling group to work. Without it, even if we have a healthy instance, we will get an error. This is explained at [How do I resolve the error "Failed to receive X resource signal(s) within the specified duration" in AWS CloudFormation?](https://aws.amazon.com/premiumsupport/knowledge-center/cloudformation-failed-signal/).
+schemaVersion: '0.3'
+parameters:
+  ImageId:
+    type: String
+    default: ami-02b6d9703a69265e9
+    allowedPattern: 'ami-[a-zA-Z0-9]+$'
+    description: RHEL8 source AMI ID
+  InstanceType:
+    type: String
+    default: t2.micro
+    allowedValues:
+      - t2.micro
+      - t2.small
+      - t2.medium
+      - t2.large
+    description: Restricted set of instance types to deploy
+  SubnetId:
+    type: String
+    allowedPattern: 'subnet-[a-zA-Z0-9]+$'
+    description: Subnet to launch the instances in
+    default: <subnet_id>
+  IamInstanceProfileArn:
+    type: String
+    allowedPattern: 'arn:aws:iam::(\d{12}):instance-profile\/[a-zA-Z0-9-]+'
+    description: IAM instance profile to attach. Minimum policy needed is AmazonSSMManagedInstanceCore
+    default: arn:aws:iam::<aws_account_id>:instance-profile/ec2-ssm-core
+  InstallSSMAgentUserData:
+    type: String
+    description: User data script to install SSM agent
+    default: <InstallSSMAgentUserData>
+mainSteps:
+  - name: launchInstances
+    action: 'aws:runInstances'
+    maxAttempts: 1
+    onFailure: Abort
+    inputs:
+      ImageId: '{{ ImageId }}'
+      InstanceType: '{{ InstanceType }}'
+      IamInstanceProfileArn: '{{ IamInstanceProfileArn }}'
+      MinInstanceCount: 1
+      MaxInstanceCount: 1
+      UserData: '{{ InstallSSMAgentUserData }}'
+      TagSpecifications:
+        - ResourceType: instance
+          Tags:
+          - Key: Name
+            Value: RHEL8-SSM
+          - Key: Environment
+            Value: Dev
+    description: Launches the instance and installs the SSM agent
