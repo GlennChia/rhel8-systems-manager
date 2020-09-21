@@ -60,6 +60,20 @@ mainSteps:
           - Key: Environment
             Value: Dev
     description: Launches the instance and installs the SSM agent
+    nextStep: installCfnSignal
+  - name: installCfnSignal
+    action: 'aws:runCommand'
+    maxAttempts: 1
+    onFailure: Abort
+    inputs:
+      DocumentName: AWS-RunShellScript
+      InstanceIds:
+        - '{{ launchInstances.InstanceIds }}'
+      Parameters:
+        commands:
+          - sudo yum install python3 -y
+          - sudo pip3 install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz
+    description: Installs cfn-signal
     nextStep: terminateInstances
   - name: terminateInstances
     action: 'aws:changeInstanceState'
