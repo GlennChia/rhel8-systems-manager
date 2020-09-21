@@ -60,3 +60,14 @@ mainSteps:
           - Key: Environment
             Value: Dev
     description: Launches the instance and installs the SSM agent
+    nextStep: terminateInstances
+  - name: terminateInstances
+    action: 'aws:changeInstanceState'
+    maxAttempts: 1
+    onFailure: Abort
+    inputs:
+      InstanceIds:
+        - '{{ launchInstances.InstanceIds }}'
+      DesiredState: terminated
+    description: Terminates the instance after making an image
+    isEnd: 'true'
