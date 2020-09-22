@@ -45,3 +45,26 @@ Command to edit the parameter in the step directly (archive). We are taking the 
 ```bash
 sed -i "s/'{{ InstallSSMAgentUserData }}'/`base64 -w0 ssm_agent_install.sh`/g" RHEl8_AMI.yaml
 ```
+
+# 3. Console guide
+
+## 3.1 Running an automation
+
+After creating the document, click Automation on the left panel -> Execute automation
+
+![](assets/01_automation_console.PNG)
+
+We then see the document and have an overview of the created document. Clicking Next reveals more details and allows us to execute the execution
+
+![](assets/02_execute_automation.PNG)
+
+From the screen shown we can execute execution from the console or use a shareable link or get a command that we can execute from the CLI (change preference via the dropdown)
+
+![](assets/03_execute_automation_2.PNG)
+
+![](assets/04_execute_automation_3.PNG)
+
+This shows up in the execution table
+
+![](assets/05_execute_automation_verification.PNG)
+
