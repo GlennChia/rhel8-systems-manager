@@ -68,3 +68,77 @@ This shows up in the execution table
 
 ![](assets/05_execute_automation_verification.PNG)
 
+
+
+
+
+## 3.2 Patching and patch baselines
+
+### 3.2.1 Predefined patch baselines
+
+Systems Manager -> Patch Manager -> View predefined patch baselines
+
+![](assets/06_patch_baselines_predefined.PNG)
+
+Example of the Red Hat Baseline
+
+![](assets/07_patch_baselines_predefined_rhel.PNG)
+
+### 3.2.2 Creating a baseline
+
+Systems Manager -> Patch Manager -> View predefined patch baselines -> Create patch baseline. Configure approval rules, patch exceptions, Patch Sources and tags
+
+Set the Name and Operating System
+
+<img src="assets/08_patch_baseline_create1.PNG" style="zoom:50%;" />
+
+Set the approval rules (In this case I just set to all and auto approve immediately)
+
+<img src="assets/09_patch_baseline_create2.PNG" style="zoom:50%;" />
+
+Then I leave the rest as defaults and Create patch baseline
+
+### 3.2.3 Assign a patch group
+
+Once the baseline has been created, Systems Manager -> Patch Manager -> View predefined patch baselines -> Search through the pages to find the patch. Check the patch baseline -> Actions -> Modify patch groups
+
+![](assets/10_patch_group.PNG)
+
+Give the patch group a name and click `Add`
+
+<img src="assets/11_patch_group2.PNG" style="zoom:50%;" />
+
+Head to the Patch Group tab to verify
+
+![](assets/12_patch_group3.PNG)
+
+### 3.2.4 Configure patching
+
+This is the step that  uses the patch baselines and patch groups created earlier
+
+This AWS documentation, [About patch groups](https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-patch-patchgroups.html) explains how patch groups find the instances they are supposed to patch
+
+- Note: In the 3.2.3 where we see the custom baseline, notice that it is not the default baseline for the Red Hat Enterprise Linux and this will influence how the baselines find the instances
+- First check is for the appropriate tag. Since the custom patch group is called "rhelpatch", instances that are to be patched with the custom baseline need to be tagged with the key `Patch Group` and value `rhelpatch`
+- If not, RHEL8 instances will default to the standard patch
+- If there is a key `Patch Group` but its value doesn't match existing patch groups then it will still use the default baseline
+
+There are 3 options for selecting instances
+
+![](assets/13_configure_patching_select_instances.PNG)
+
+Configure the patching schedule (here I just scan now) and operation
+
+![](assets/14_configure_patching_schedule_operation.PNG)
+
+Under additional settings we see information that Patch Manager patches each instance using the registered patch baseline of its patch group.
+
+![](assets/15_configure_patching_additional_info.PNG)
+
+Verify that the command has been executed. Run command -> Command history
+
+![](assets/16_run_patch_baseline.PNG)
+
+In this case since no instances have the correct tag to match the patch group specified, there are no instances to scan.
+
+![](assets/17_run_patch_baseline2.PNG)
