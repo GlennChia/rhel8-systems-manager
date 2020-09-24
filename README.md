@@ -142,3 +142,21 @@ Verify that the command has been executed. Run command -> Command history
 In this case since no instances have the correct tag to match the patch group specified, there are no instances to scan.
 
 ![](assets/17_run_patch_baseline2.PNG)
+
+## 3.3 Maintenance window
+
+Maintenance window -> Create maintenance window -> Steps are well guided. With the defaults, only Name, Duration and Stop initiating tasks are compulsory. The maintenance window shows up in the table after creation
+
+![](assets/18_maintenance_window.PNG)
+
+Clicking it shows the details configured earlier
+
+![](assets/19_maintenance_window2.PNG)
+
+Register tasks
+
+![](assets/20_maintenance_window3.PNG)
+
+Accept the defaults and select the automation document. Select the targets, configure concurrency and error threshold
+
+![](assets/21_maintenance_window4.PNG)
