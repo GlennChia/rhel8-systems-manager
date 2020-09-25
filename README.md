@@ -160,3 +160,27 @@ Register tasks
 Accept the defaults and select the automation document. Select the targets, configure concurrency and error threshold
 
 ![](assets/21_maintenance_window4.PNG)
+
+# 4. ARNs and IAM
+
+[Actions, resources, and condition keys for AWS Systems Manager](https://docs.aws.amazon.com/IAM/latest/UserGuide/list_awssystemsmanager.html) shows a list of ARNs and the way to use resource tags to control access
+
+A sample of using resource tags is in the snippet below. Here I ban getting any parameter that starts with prod if there isn't a tag which says read: yes
+
+```json
+{
+    "Effect": "Deny",
+    "Action": [
+        "ssm:GetParameter*"
+    ],
+    "Resource": [
+        "arn:aws:ssm:*:*:parameter/prod*"
+    ],
+    "Condition": {
+        "StringNotEqualsIgnoreCaseIfExists": {
+            "ssm:resourceTag/read": "yes"
+        }
+    }
+}
+```
+
