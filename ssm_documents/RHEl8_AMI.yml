@@ -74,6 +74,27 @@ mainSteps:
           - sudo yum install python3 -y
           - sudo pip3 install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-py3-latest.tar.gz
     description: Installs cfn-signal
+    nextStep: stopInstances
+  - name: stopInstances
+    action: 'aws:changeInstanceState'
+    maxAttempts: 1
+    onFailure: Abort
+    inputs:
+      InstanceIds:
+        - '{{ launchInstances.InstanceIds }}'
+      DesiredState: stopped
+    description: Stop the instance before making an image
+    nextStep: createImage
+  - name: createImage
+    action: 'aws:createImage'
+    maxAttempts: 1
+    onFailure: Abort
+    inputs:
+      InstanceId: '{{ launchInstances.InstanceIds }}'
+      ImageName: AMI Created on {{global:DATE_TIME}}
+      NoReboot: true
+      ImageDescription: AMI created with ssm-agent and cfn-signal
+    description: Create the image after the customizations
     nextStep: terminateInstances
   - name: terminateInstances
     action: 'aws:changeInstanceState'

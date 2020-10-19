@@ -67,6 +67,10 @@ Command to edit the parameter in the step directly (archive). We are taking the 
 sed -i "s/'{{ InstallSSMAgentUserData }}'/`base64 -w0 ssm_agent_install.sh`/g" RHEl8_AMI.yaml
 ```
 
+## 2.3 Create image
+
+Refer to [aws:createImage – Create an Amazon Machine Image](https://docs.aws.amazon.com/systems-manager/latest/userguide/automation-action-create.html) for documentation and code snippets
+
 # 3. Console guide
 
 ## 3.1 Running an automation
