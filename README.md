@@ -25,6 +25,27 @@ aws ssm update-document ^
     --document-format "YAML"
 ```
 
+Note: To specify a profile use
+
+```bash
+aws ssm create-document ^
+    --profile "ssmtest" ^
+    --region "ap-southeast-1" ^
+    --content file://RHEL8_AMI.yml ^
+    --name "RHEL8_AMI" ^
+    --document-type "Automation" ^
+    --document-format "YAML" ^
+    --tags Key=Name,Value=RHEL8 Key=Environment,Value=Dev
+
+aws ssm update-document ^
+    --profile "ssmtest" ^
+    --region "ap-southeast-1" ^
+    --content file://RHEL8_AMI.yml ^
+    --name "RHEL8_AMI" ^
+    --document-version $LATEST ^
+    --document-format "YAML"
+```
+
 # 2 SSM document
 
 ## 2.1 aws:runInstances
