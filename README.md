@@ -209,3 +209,89 @@ A sample of using resource tags is in the snippet below. Here I ban getting any 
 }
 ```
 
+# 5. Useful Installs
+
+## 5.1 Utility installs
+
+```bash
+yum install vim -y
+yum install unzip -y
+```
+
+## 5.2 Install AWS CLI
+
+By default, installing this will install this to `/usr/local/bin/aws`
+
+- Can run in normal user with `aws`
+- Can run in root with `/usr/local/bin/aws`
+
+```bash
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+chmod -R +x aws
+sudo ./aws/install
+```
+
+Setting the `aws` command to be able to run in root
+
+```bash
+alias aws="/usr/local/bin/aws"
+source ~/.bash_profile
+```
+
+## 5.3 Install git
+
+```bash
+sudo dnf install git -y
+```
+
+## 5.4 Install python
+
+```bash
+sudo yum install python3 -y
+```
+
+## 5.5 Install docker
+
+```bash
+sudo su
+# Enable Docker CE package repository
+dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+# Check available docker version
+dnf list docker-ce
+# Install the latest version of docker
+dnf install docker-ce --nobest -y
+# start and enable docker's service
+systemctl start docker
+systemctl enable docker
+```
+
+## 5.6 Install kubectl on Rhel
+
+[Install kubectl on Linux](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+
+```bash
+cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOF
+yum install -y kubectl
+```
+
+## 5.7 Install helm
+
+[Installing Helm](https://helm.sh/docs/intro/install/)
+
+```bash
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+```
+
+
+

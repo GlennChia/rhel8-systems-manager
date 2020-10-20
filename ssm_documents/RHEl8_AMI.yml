@@ -60,6 +60,82 @@ mainSteps:
           - Key: Environment
             Value: Dev
     description: Launches the instance and installs the SSM agent
+    nextStep: installUtils
+  - name: installUtils
+    action: 'aws:runCommand'
+    maxAttempts: 1
+    onFailure: Abort
+    inputs:
+      DocumentName: AWS-RunShellScript
+      InstanceIds:
+        - '{{ launchInstances.InstanceIds }}'
+      Parameters:
+        commands:
+          - sudo yum install vim -y
+          - sudo yum install unzip -y
+    description: Installs utilities
+    nextStep: installAWSCLI
+  - name: installAWSCLI
+    action: 'aws:runCommand'
+    maxAttempts: 1
+    onFailure: Abort
+    inputs:
+      DocumentName: AWS-RunShellScript
+      InstanceIds:
+        - '{{ launchInstances.InstanceIds }}'
+      Parameters:
+        commands:
+          - sudo curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          - sudo unzip awscliv2.zip
+          - sudo chmod -R +x aws
+          - sudo ./aws/install
+          - alias aws="/usr/local/bin/aws"
+          - source ~/.bash_profile
+    description: Installs AWS CLI
+    nextStep: installGit
+  - name: installGit
+    action: 'aws:runCommand'
+    maxAttempts: 1
+    onFailure: Abort
+    inputs:
+      DocumentName: AWS-RunShellScript
+      InstanceIds:
+        - '{{ launchInstances.InstanceIds }}'
+      Parameters:
+        commands:
+          - sudo dnf install git -y
+    description: Installs git
+    nextStep: installDocker
+  - name: installDocker
+    action: 'aws:runCommand'
+    maxAttempts: 1
+    onFailure: Abort
+    inputs:
+      DocumentName: AWS-RunShellScript
+      InstanceIds:
+        - '{{ launchInstances.InstanceIds }}'
+      Parameters:
+        commands:
+          - sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+          - sudo dnf install docker-ce --nobest -y
+          - sudo systemctl start docker
+          - sudo systemctl enable docker
+    description: Installs Docker
+    nextStep: installKubectl
+  - name: installKubectl
+    action: 'aws:runCommand'
+    maxAttempts: 1
+    onFailure: Abort
+    inputs:
+      DocumentName: AWS-RunShellScript
+      InstanceIds:
+        - '{{ launchInstances.InstanceIds }}'
+      Parameters:
+        commands:
+          - sudo curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+          - sudo chmod +x ./kubectl
+          - sudo mv ./kubectl /usr/local/bin/kubectl
+    description: Installs Kubectl
     nextStep: installCfnSignal
   - name: installCfnSignal
     action: 'aws:runCommand'
