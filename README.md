@@ -218,6 +218,12 @@ yum install vim -y
 yum install unzip -y
 ```
 
+Install dig
+
+```bash
+sudo dnf install bind-utils -y
+```
+
 ## 5.2 Install AWS CLI
 
 By default, installing this will install this to `/usr/local/bin/aws`
@@ -266,6 +272,12 @@ systemctl start docker
 systemctl enable docker
 ```
 
+Alternatively, try to install the yum provided docker
+
+```bash
+sudo yum install docker -y
+```
+
 ## 5.6 Install kubectl on Rhel
 
 [Install kubectl on Linux](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
@@ -293,5 +305,25 @@ chmod 700 get_helm.sh
 ./get_helm.sh
 ```
 
+## 5.7 Install Wireshark
 
+[How to install wireshark on RHEL 8/CentOS 8 Linux](https://linuxconfig.org/install-wireshark-on-linux-redhat-8)
+
+```bash
+dnf install wireshark-cli -y
+```
+
+Verify the install
+
+```bash
+rpm -qa | grep -i wireshark
+tshark -v
+```
+
+## 5.8 Node
+
+```bash
+dnf groupinstall "Development Tools" -y
+dnf module install nodejs -y
+```
 
